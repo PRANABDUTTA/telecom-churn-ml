@@ -39,11 +39,18 @@ st.title("Telco customer churn prediction")
 try:
     preprocessor, model, model_name, form_defaults = load_bundle()
 except Exception as e:
-    st.error(
-        "Could not load `artifacts/`. Run **section 8** in the notebook or `python train_export.py`, "
-        "then commit the `artifacts/` folder to GitHub."
-    )
-    st.caption(str(e))
+    st.error("Could not load model files from `artifacts/`.")
+    with st.expander("Technical details (for debugging)", expanded=True):
+        st.code(str(e), language="text")
+        st.markdown(
+            "Expected files next to `app.py`:\n"
+            "- `artifacts/preprocessor.joblib`\n"
+            "- `artifacts/model.joblib`\n"
+            "- `artifacts/model_name.txt`\n"
+            "- `artifacts/form_defaults.joblib`\n\n"
+            "On **GitHub**, open your repo and confirm the folder is spelled **`artifacts`** (lowercase, plural), "
+            "not `artifact` or `artfact`. Linux (Streamlit Cloud) is **case-sensitive**."
+        )
     st.stop()
 
 st.caption(f"Deployed model: **{model_name}**")
