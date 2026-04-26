@@ -51,9 +51,11 @@ Replace `<YOUR_USER>` / `<YOUR_REPO>` with your GitHub username and repository n
 ## 3. Deploy on Streamlit Community Cloud
 
 1. Sign in at [https://share.streamlit.io](https://share.streamlit.io) with GitHub.
-2. **New app** → pick the repository and branch **main**.
+2. **New app** → pick the repository and branch (**`main`** or **`master`**, whichever you use on GitHub).
 3. **Main file path:** `app.py`
-4. **App URL:** choose a subdomain → **Deploy**.
+4. Click **Advanced settings** → set **Python version to 3.12** (or **3.11**).  
+   **Do not use Python 3.14** for this app: logs like `Python 3.14.x` often mean `pip`/`uv` has little or no binary wheel support yet for **numpy / pandas / scikit-learn**, so the install can sit for a long time or fail. See [Upgrade your app’s Python version](https://docs.streamlit.io/deploy/streamlit-community-cloud/manage-your-app/upgrade-python) — if you already deployed on 3.14, you must **Delete** the app and **deploy again** with **Advanced settings → Python 3.12**.
+5. **App URL:** choose a subdomain → **Deploy**.
 
 Streamlit installs dependencies from `requirements.txt` and runs `streamlit run app.py`.
 
@@ -65,5 +67,6 @@ Streamlit installs dependencies from `requirements.txt` and runs `streamlit run 
 
 ## Troubleshooting
 
+- **“In the oven” forever / slow `Processing dependencies`:** Check logs for **`Python 3.14`**. Switch to **Python 3.12** (delete app → redeploy → Advanced settings). See section **3** above.
 - **Missing artifacts:** Cloud build succeeds but the app shows an error → ensure `artifacts/*.joblib` and `model_name.txt` are committed and paths are correct.
-- **Import errors:** Match Python version roughly to your local training (Cloud uses a recent Python; scikit-learn in `requirements.txt` should be compatible with saved models).
+- **Import / sklearn errors:** Use `scikit-learn>=1.5.0,<1.7.0` in `requirements.txt` to match Colab-pickled `ColumnTransformer` artifacts.
